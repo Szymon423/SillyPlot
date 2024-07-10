@@ -1,1 +1,1 @@
-docker run --rm sillyplot-test
+docker run --rm -v $(pwd):/SillyPlot sillyplot-test

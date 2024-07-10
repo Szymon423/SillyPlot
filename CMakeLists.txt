@@ -2,12 +2,13 @@ cmake_minimum_required(VERSION 3.10)
 project(SillyPlot)
 
 # Ustawienie ścieżki do vcpkg
-set(CMAKE_TOOLCHAIN_FILE /path/to/vcpkg/scripts/buildsystems/vcpkg.cmake)
+set(CMAKE_TOOLCHAIN_FILE /usr/local/vcpkg/scripts/buildsystems/vcpkg.cmake)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Dodanie plików źródłowych
 add_library(SillyPlot
-    src/Plot.cpp
-    src/PNGWriter.cpp
+    src/plot.cpp
 )
 
 # Ustawienie katalogu nagłówków

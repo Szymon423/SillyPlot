@@ -46,11 +46,5 @@ COPY . /SillyPlot
 # Przejdź do katalogu z kodem źródłowym
 WORKDIR /SillyPlot
 
-# Zbuduj projekt i uruchom testy
-RUN mkdir build && cd build \
-    && cmake .. -DCMAKE_TOOLCHAIN_FILE=/vcpkg/scripts/buildsystems/vcpkg.cmake \
-    && make \
-    && make test
-
-# Punkt wejścia (opcjonalnie)
-CMD ["bash"]
+# Punkt wejścia: kompilacja, uruchomienie testów i przykładu
+CMD ["bash", "-c", "mkdir -p build && cd build && cmake .. -DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake && make && ctest && ./example"]

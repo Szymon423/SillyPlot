@@ -6,6 +6,13 @@ This is my attempt to create simple plot library for `C++`. Especially one that 
 > [!NOTE]
 > This library will not display any plots. It can only save them to `.png`
 
+## But Why?
+Why to choose this library when you can use `python` and all it goodness like `matplotlib`?
+
+Well.. I also do not know. But maybe when writing somethig that need to be fast, running on constrained hardware resources, without any other libraries maybe it is worth checking out on this something.
 
 ## Dependencies
-- [PNGWriter]()
+- [PNGWriter](https://github.com/pngwriter/pngwriter)
+
+## License
+This software is released under `GPLv2+` license.

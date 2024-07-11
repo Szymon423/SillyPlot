@@ -4,6 +4,7 @@ FROM arm64v8/debian:bullseye
 # Dependencies 
 RUN rm /var/lib/dpkg/info/libc-bin.*
 RUN apt clean && apt update && apt install -y libc-bin \
+    libcairo2-dev \
     git \
     curl \
     zip \

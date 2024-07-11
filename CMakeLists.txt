@@ -9,6 +9,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 # Dodanie plików źródłowych
 add_library(YAPL
     src/plot.cpp
+    src/exception.cpp
 )
 
 # Ustawienie katalogu nagłówków

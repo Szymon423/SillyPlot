@@ -1,29 +1,55 @@
-#include "yapl/plot.hpp"
+#include "yapl.hpp"
 
-yapl::Figure::Figure(int width, int height) : width(width), height(height) {
-    std::cout << "Constructor" << std::endl;
+
+yapl::Plot::Plot() {
+
 }
 
-void yapl::Figure::add_data(const std::vector<double>& x, const std::vector<double>& y) {
-    std::cout << "Adding data" << std::endl;
-    dataX.push_back(x);
-    dataY.push_back(y);
-}
-
-void yapl::Figure::save(const std::string& filename) {
-    std::cout << "Saving" << std::endl;
-    std::vector<unsigned char> image(width * height * 3, 255); // Biały obraz
-
-    // Prosty przykład rysowania wykresu
-    for (size_t i = 0; i < dataX.size(); ++i) {
-        for (size_t j = 0; j < dataX[i].size(); ++j) {
-            int x = static_cast<int>(dataX[i][j] * width);
-            int y = static_cast<int>(dataY[i][j] * height);
-            if (x >= 0 && x < width && y >= 0 && y < height) {
-                image[(y * width + x) * 3 + 0] = 255; // R
-                image[(y * width + x) * 3 + 1] = 0;   // G
-                image[(y * width + x) * 3 + 2] = 0;   // B
-            }
-        }
+void yapl::Plot::addData(const std::vector<double>& x, const std::vector<double>& y) {
+    // check if sizes fit eachother
+    if (x.size() != y.size()) {
+        throw yapl::Exception("Provided X data size differs Y data size");
     }
+
+    // add actual data
+    _x.push_back(x);
+    _y.push_back(y);
+}
+
+void yapl::Plot::addData(const std::vector<std::pair<double, double>>& data) {
+    // prepare individual vectors
+    std::vector<double> x(data.size()); 
+    std::vector<double> y(data.size());
+    
+    for (int i = 0; i < data.size(); i++) {
+        x.at(i) = std::get<0>(data.at(i));
+        y.at(i) = std::get<1>(data.at(i));
+    }
+
+    _x.push_back(x);
+    _y.push_back(y);
+}
+
+void yapl::Plot::xLabel(const std::string& label) {
+    _x_label = label;
+}
+
+void yapl::Plot::yLabel(const std::string& label) {
+    _y_label = label;
+}
+
+void yapl::Plot::title(const std::string& label) {
+    _title = label;
+}
+
+void yapl::Plot::legend(const std::vector<std::string>& legend) {
+    if (legend.size() != _x.size()) {
+        throw yapl::Exception("Legend size does not metch data size");
+    }
+
+    _legend = legend;
+}
+
+void yapl::Plot::save(const std::filesystem::path& path, const uint16_t width, const uint16_t height) {
+
 }

@@ -37,10 +37,17 @@ namespace yapl {
         void legend(const std::vector<std::string>& legend);
         
         /// @brief Function to save plot as image
-        /// @param path path uner which save image
+        /// @param path path under which save image
         /// @param width width in pixels of image
         /// @param height height in pixels of image
         void save(const std::filesystem::path& path, const uint16_t width = 800, const uint16_t height = 600);
+
+        /// @brief Function to draw plot with cario
+        /// @param plot refference to paint object
+        /// @param path 
+        /// @param width 
+        /// @param height 
+        friend void drawPlot(const Plot& plot, const std::filesystem::path& path, const uint16_t width, const uint16_t height);
 
     private:
         std::vector<std::vector<double>> _x;

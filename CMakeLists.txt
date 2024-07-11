@@ -1,25 +1,31 @@
 cmake_minimum_required(VERSION 3.10)
 project(YAPL)
 
-# Ustawienie ścieżki do vcpkg
-set(CMAKE_TOOLCHAIN_FILE /usr/local/vcpkg/scripts/buildsystems/vcpkg.cmake)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-# Dodanie plików źródłowych
+# Search for cario with pkg-config
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(CAIRO REQUIRED cairo)
+
+# Add source files
 add_library(YAPL
     src/plot.cpp
     src/exception.cpp
+    src/painter.cpp
 )
 
-# Ustawienie katalogu nagłówków
-target_include_directories(YAPL PUBLIC include)
+# Set include directory
+target_include_directories(YAPL PUBLIC include ${CAIRO_INCLUDE_DIRS})
 
-# Dodanie przykładu
+# Linkowanie biblioteki Cairo do YAPL
+target_link_libraries(YAPL PRIVATE ${CAIRO_LIBRARIES})
+
+# Add example
 add_executable(example examples/basic_plot.cpp)
 target_link_libraries(example YAPL)
 
-# Dodanie testów (opcjonalnie)
+# Add tests
 enable_testing()
 add_executable(test_plot tests/test_plot.cpp)
 target_link_libraries(test_plot YAPL)

@@ -1,17 +1,17 @@
 #include "SillyPlot/plot.hpp"
 
 
-SillyPlot::Plot::Plot(int width, int height) : width(width), height(height) {
+yapl::Figure::Figure(int width, int height) : width(width), height(height) {
     std::cout << "Constructor" << std::endl;
 }
 
-void SillyPlot::Plot::add_data(const std::vector<double>& x, const std::vector<double>& y) {
+void yapl::Figure::add_data(const std::vector<double>& x, const std::vector<double>& y) {
     std::cout << "Adding data" << std::endl;
     dataX.push_back(x);
     dataY.push_back(y);
 }
 
-void SillyPlot::Plot::save(const std::string& filename) {
+void yapl::Figure::save(const std::string& filename) {
     std::cout << "Saving" << std::endl;
     std::vector<unsigned char> image(width * height * 3, 255); // Biały obraz
 

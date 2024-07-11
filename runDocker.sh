@@ -1,1 +1,1 @@
-docker run --rm -v $(pwd):/SillyPlot sillyplot-test
+docker run --rm -v $(pwd):/YAPL yapl-test

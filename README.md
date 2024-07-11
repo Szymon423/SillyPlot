@@ -1,6 +1,4 @@
-![SillyPlot logo](./img/logo.png)
-
-# SillyPlot
+# Yet Another Plot Library
 This is my attempt to create simple plot library for `C++`. Especially one that is willing to work on `Raspberry Pi` devices on `arm64` OS. 
 
 > [!NOTE]
@@ -9,10 +7,10 @@ This is my attempt to create simple plot library for `C++`. Especially one that 
 ## But Why?
 Why to choose this library when you can use `python` and all it goodness like `matplotlib`?
 
-Well.. I also do not know. But maybe when writing somethig that need to be fast, running on constrained hardware resources, without any other libraries maybe it is worth checking out on this something.
+Well.. I also do not know. But maybe when writing somethig that need to work without any other programs like amazing `gnuplot`, running on constrained hardware resources system maybe it is worth checking out on this something.
 
 ## Dependencies
-- [PNGWriter](https://github.com/pngwriter/pngwriter)
+- [cario](https://www.cairographics.org/)
 
 ## License
 This software is released under `GPLv2+` license.

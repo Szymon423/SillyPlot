@@ -5,10 +5,10 @@
 #include <filesystem>
 #include <iostream>
 
-namespace SillyPlot {
-    class Plot {
+namespace yaml {
+    class Figure {
     public:
-        Plot(int width, int height);
+        Figure(int width, int height);
         void add_data(const std::vector<double>& x, const std::vector<double>& y);
         void save(const std::string& filename);
 

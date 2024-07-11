@@ -1,1 +1,1 @@
-docker build -t sillyplot-test .
+docker build -t yapl-test .

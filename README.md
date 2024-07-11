@@ -1,3 +1,5 @@
+[logo](./img/logo.png)
+
 # Yet Another Plot Library
 This is my attempt to create simple plot library for `C++`. Especially one that is willing to work on `Raspberry Pi` devices on `arm64` OS. 
 

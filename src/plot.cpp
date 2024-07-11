@@ -1,5 +1,4 @@
-#include "SillyPlot/plot.hpp"
-
+#include "yapl/plot.hpp"
 
 yapl::Figure::Figure(int width, int height) : width(width), height(height) {
     std::cout << "Constructor" << std::endl;

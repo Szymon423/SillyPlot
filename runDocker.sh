@@ -1,1 +1,1 @@
-docker run --rm -v $(pwd):/YAPL yapl-test
+docker run --rm -v $(pwd):/YAPL yapl-test:latest

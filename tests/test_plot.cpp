@@ -2,7 +2,7 @@
 #include <cassert>
 
 void test_plot() {
-    yaml::Figure plot(800, 600);
+    yapl::Figure plot(800, 600);
     plot.add_data({0.1, 0.2, 0.3, 0.4}, {0.1, 0.4, 0.9, 1.6});
     plot.save("test_plot.png");
 }

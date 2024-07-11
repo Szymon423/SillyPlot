@@ -5,7 +5,7 @@
 #include <filesystem>
 #include <iostream>
 
-namespace yaml {
+namespace yapl {
     class Figure {
     public:
         Figure(int width, int height);

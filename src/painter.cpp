@@ -15,7 +15,11 @@ namespace yapl {
         const double& val_high_bound,
         const double& output_low_bound,
         const double& output_high_bound) {
-        // code for implementation
+        // check if we are not dividing by 0
+        if (val_high_bound == val_low_bound) {
+            throw Exception("Scalling impossible");
+        }
+        // scalling time    
         return (val - val_low_bound) * output_high_bound / (val_high_bound - val_low_bound) + output_low_bound;
     }
     
@@ -60,7 +64,6 @@ namespace yapl {
             x_min = std::min(x_min, *min);
             x_max = std::max(x_max, *max);
         }
-        std::cout << "X: [" << x_min << " : " << x_max << "]" << std::endl;
 
         // Searching for Y
         for (auto& data: plot._y) {
@@ -68,7 +71,6 @@ namespace yapl {
             y_min = std::min(y_min, *min);
             y_max = std::max(y_max, *max);
         }
-        std::cout << "Y: [" << y_min << " : " << y_max << "]" << std::endl;
 
         // Workout scalling data for each dataset
         for (size_t i = 0; i < plot._x.size(); ++i) {

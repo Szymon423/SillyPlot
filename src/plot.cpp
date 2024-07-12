@@ -53,4 +53,18 @@ namespace yapl {
     void Plot::save(const std::filesystem::path& path, const uint16_t width, const uint16_t height) {
         drawPlot(*this, path, width, height);
     }
+
+    void Plot::xLim(const double lower_bound, const double higher_bound) {
+        _x_lim_min = lower_bound;
+        _x_lim_max = higher_bound;
+    }
+
+    void Plot::yLim(const double lower_bound, const double higher_bound) {
+        _y_lim_min = lower_bound;
+        _y_lim_max = higher_bound;
+    }
+
+    void Plot::grid(const bool state) {
+        _grid = state;
+    }
 }

@@ -4,6 +4,7 @@
 #include <string>
 #include <filesystem>
 #include <utility>
+#include <optional>
 
 namespace yapl {
     class Plot {
@@ -42,6 +43,20 @@ namespace yapl {
         /// @param height height in pixels of image
         void save(const std::filesystem::path& path, const uint16_t width = 800, const uint16_t height = 600);
 
+        /// @brief Function to set x axis limits
+        /// @param lower_bound lower value
+        /// @param higher_bound higher value
+        void xLim(const double lower_bound, const double higher_bound);
+
+        /// @brief Function to set y axis limits
+        /// @param lower_bound lower value
+        /// @param higher_bound higher value
+        void yLim(const double lower_bound, const double higher_bound);
+
+        /// @brief Function to configure grid
+        /// @param state true - grid visible, false - grid invisible
+        void grid(const bool state);
+
         /// @brief Function to draw plot with cario
         /// @param plot refference to paint object
         /// @param path 
@@ -56,5 +71,10 @@ namespace yapl {
         std::string _y_label;
         std::string _title;
         std::vector<std::string> _legend;
+        std::optional<double> _x_lim_min;
+        std::optional<double> _x_lim_max;
+        std::optional<double> _y_lim_min;
+        std::optional<double> _y_lim_max;
+        bool _grid;
     };
 }

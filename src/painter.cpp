@@ -42,9 +42,19 @@ namespace yapl {
         cairo_line_to(cr, width - border_offset, height - border_offset);
         cairo_stroke(cr);
 
-        // Y axis
-        cairo_move_to(cr, border_offset, height - border_offset);
+        // right
+        cairo_move_to(cr, width - border_offset, height - border_offset);
+        cairo_line_to(cr, width - border_offset, border_offset);
+        cairo_stroke(cr);
+
+        // top
+        cairo_move_to(cr, width - border_offset, border_offset);
         cairo_line_to(cr, border_offset, border_offset);
+        cairo_stroke(cr);
+
+        // left
+        cairo_move_to(cr, border_offset, border_offset);
+        cairo_line_to(cr, border_offset, height - border_offset);
         cairo_stroke(cr);
 
         // Draw data

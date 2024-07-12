@@ -2,50 +2,21 @@
 #include <cairo.h>
 #include <cairo-svg.h>
 #include <stdexcept>
+#include <algorithm>
+#include <limits>
+#include <execution>
+#include <functional>
+#include <iostream>
+
 
 namespace yapl {
-    void interpolate_data_over_pixels(const std::vector<double>& x_from, 
-        const std::vector<double>& y_from, 
-        const std::vector<uint16_t>& x_to, 
-        std::vector<uint16_t>& y_to) {
+    double scale_value(const double& val, 
+        const double& val_low_bound, 
+        const double& val_high_bound,
+        const double& output_low_bound,
+        const double& output_high_bound) {
         // code for implementation
-        if (x_from.size() != y_from.size()) {
-            throw Exception("x_from and y_from must have the same size");
-        }
-
-        y_to.clear();
-        y_to.reserve(x_to.size());
-
-        for (const auto& x : x_to) {
-            // Find the interval [x_from[i], x_from[i+1]] that contains x
-            auto it = std::lower_bound(x_from.begin(), x_from.end(), x);
-            
-            if (it == x_from.end()) {
-                // If x is beyond the last element of x_from, use the last interval
-                it = x_from.end() - 1;
-            } 
-            else if (it != x_from.begin() && *it != x) {
-                // If x is not exactly equal to an element in x_from, use the previous interval
-                --it;
-            }
-
-            size_t i = std::distance(x_from.begin(), it);
-            
-            // Linear interpolation
-            if (i + 1 < x_from.size()) {
-                double x0 = x_from[i];
-                double y0 = y_from[i];
-                double x1 = x_from[i + 1];
-                double y1 = y_from[i + 1];
-
-                double y = y0 + (x - x0) * (y1 - y0) / (x1 - x0);
-                y_to.push_back(static_cast<uint16_t>(y));
-            } 
-            else {
-                // If we are at the last element, just use the last y value
-                y_to.push_back(static_cast<uint16_t>(y_from[i]));
-            }
-        }
+        return (val - val_low_bound) * output_high_bound / (val_high_bound - val_low_bound) + output_low_bound;
     }
     
     void drawPlot(const Plot& plot, const std::filesystem::path& path, const uint16_t width, const uint16_t height) {
@@ -72,21 +43,57 @@ namespace yapl {
 
         // Draw data
         cairo_set_line_width(cr, 1.5);
-        for (size_t i = 0; i < plot._x.size(); ++i) {
-            cairo_set_source_rgb(cr, 0, 0, 1); // Blue color for lines
-            
-            // Interpolacja danych
-            std::vector<uint16_t> x_pixels;
-            std::vector<uint16_t> y_pixels;
-            for (double x_val : plot._x[i]) {
-                x_pixels.push_back(static_cast<uint16_t>(50 + x_val));
-            }
-            interpolate_data_over_pixels(plot._x[i], plot._y[i], x_pixels, y_pixels);
+        
+        if (plot._x.empty()) {
+            throw Exception("No data to plot.");
+        }
 
+        // Searching for min and max values on plot
+        double x_min = std::numeric_limits<double>::max();
+        double x_max = std::numeric_limits<double>::lowest();
+        double y_min = std::numeric_limits<double>::max();
+        double y_max = std::numeric_limits<double>::lowest();
+        
+        // Searching for X
+        for (auto& data: plot._x) {
+            const auto [min, max] = std::minmax_element(data.begin(), data.end());
+            x_min = std::min(x_min, *min);
+            x_max = std::max(x_max, *max);
+        }
+        std::cout << "X: [" << x_min << " : " << x_max << "]" << std::endl;
+
+        // Searching for Y
+        for (auto& data: plot._y) {
+            const auto [min, max] = std::minmax_element(data.begin(), data.end());
+            y_min = std::min(y_min, *min);
+            y_max = std::max(y_max, *max);
+        }
+        std::cout << "Y: [" << y_min << " : " << y_max << "]" << std::endl;
+
+        // Workout scalling data for each dataset
+        for (size_t i = 0; i < plot._x.size(); ++i) {
+            // Prepare length value
+            const size_t length = plot._x[i].size();
+
+            // Prepare scalled vector for X
+            auto& x = plot._x[i];
+            std::vector<double> x_scalled(length);
+            auto scale_x_value_bound = std::bind(scale_value, std::placeholders::_1, x_min, x_max, 0, width);
+            std::transform(std::execution::par_unseq, x.begin(), x.end(), x_scalled.begin(), scale_x_value_bound);
+
+            // Prepare scalled vector for Y
+            auto& y = plot._y[i];
+            std::vector<double> y_scalled(length);
+            auto scale_y_value_bound = std::bind(scale_value, std::placeholders::_1, y_min, y_max, 0, height);
+            std::transform(std::execution::par_unseq, y.begin(), y.end(), y_scalled.begin(), scale_y_value_bound);
+            
+            // Blue color for lines
+            cairo_set_source_rgb(cr, 0, 0, 1); 
+            
             // Rysowanie interpolowanych danych
-            cairo_move_to(cr, x_pixels[0], height - 50 - y_pixels[0]);
-            for (size_t j = 1; j < x_pixels.size(); ++j) {
-                cairo_line_to(cr, x_pixels[j], height - 50 - y_pixels[j]);
+            cairo_move_to(cr, x_scalled[0], height - y_scalled[0]);
+            for (size_t j = 1; j < x_scalled.size(); ++j) {
+                cairo_line_to(cr, (uint16_t)x_scalled[j], height - (uint16_t)y_scalled[j]);
             }
             cairo_stroke(cr);
         }

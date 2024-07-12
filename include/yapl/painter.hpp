@@ -3,16 +3,19 @@
 #include "yapl.hpp"
 
 namespace yapl {
-    /// @brief Function to interpolate data from given X and Y on to desired pixels vectors
-    /// @param x_from 
-    /// @param y_from 
-    /// @param x_to 
-    /// @param y_to 
-    void interpolate_data_over_pixels(const std::vector<double>& x_from, 
-        const std::vector<double>& y_from, 
-        const std::vector<uint16_t>& x_to, 
-        std::vector<uint16_t>& y_to);
-        
+    /// @brief 
+    /// @param val 
+    /// @param val_low_bound 
+    /// @param val_high_bound 
+    /// @param output_low_bound 
+    /// @param output_high_bound 
+    /// @return 
+    double scale_value(const double& val, 
+        const double& val_low_bound, 
+        const double& val_high_bound,
+        const double& output_low_bound,
+        const double& output_high_bound);
+
     /// @brief Function responsible for drawing plot 
     /// @param plot Plot object
     /// @param path path to save plot 

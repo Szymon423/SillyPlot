@@ -24,6 +24,8 @@ namespace yapl {
     }
     
     void drawPlot(const Plot& plot, const std::filesystem::path& path, const uint16_t width, const uint16_t height) {
+        constexpr uint16_t border_offset = 40;
+        constexpr uint16_t internal_border_offset = 10;
         cairo_surface_t* surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, width, height);
         cairo_t* cr = cairo_create(surface);
 
@@ -31,18 +33,18 @@ namespace yapl {
         cairo_set_source_rgb(cr, 1, 1, 1);
         cairo_paint(cr);
 
-        // Draw axes
+        // Draw frame
         cairo_set_source_rgb(cr, 0, 0, 0);
-        cairo_set_line_width(cr, 2.0);
+        cairo_set_line_width(cr, 1.0);
 
-        // X axis
-        cairo_move_to(cr, 50, height - 50);
-        cairo_line_to(cr, width - 50, height - 50);
+        // bottom
+        cairo_move_to(cr, border_offset, height - border_offset);
+        cairo_line_to(cr, width - border_offset, height - border_offset);
         cairo_stroke(cr);
 
         // Y axis
-        cairo_move_to(cr, 50, height - 50);
-        cairo_line_to(cr, 50, 50);
+        cairo_move_to(cr, border_offset, height - border_offset);
+        cairo_line_to(cr, border_offset, border_offset);
         cairo_stroke(cr);
 
         // Draw data
@@ -80,13 +82,13 @@ namespace yapl {
             // Prepare scalled vector for X
             auto& x = plot._x[i];
             std::vector<double> x_scalled(length);
-            auto scale_x_value_bound = std::bind(scale_value, std::placeholders::_1, x_min, x_max, 0, width);
+            auto scale_x_value_bound = std::bind(scale_value, std::placeholders::_1, x_min, x_max, border_offset, width - 2 * border_offset);
             std::transform(std::execution::par_unseq, x.begin(), x.end(), x_scalled.begin(), scale_x_value_bound);
 
             // Prepare scalled vector for Y
             auto& y = plot._y[i];
             std::vector<double> y_scalled(length);
-            auto scale_y_value_bound = std::bind(scale_value, std::placeholders::_1, y_min, y_max, 0, height);
+            auto scale_y_value_bound = std::bind(scale_value, std::placeholders::_1, y_min, y_max, border_offset, height - 2 * border_offset);
             std::transform(std::execution::par_unseq, y.begin(), y.end(), y_scalled.begin(), scale_y_value_bound);
             
             // Blue color for lines

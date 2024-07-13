@@ -39,7 +39,15 @@ int main() {
     return 0;
 }
 ```
+
 ![output](./img/example_plot.png)
+
+## Documentation
+To run documentation just use:
+```sh
+cd docs && mkdocs serve
+```
+
 ## Dependencies
 - [cario](https://www.cairographics.org/)
 

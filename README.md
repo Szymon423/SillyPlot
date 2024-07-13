@@ -21,6 +21,7 @@ int main() {
     try {
         yapl::Plot plot;
         plot.addData({1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, {10, 20, 30, 20, 10, 20, 30, 20, 10, 20});
+        plt.grid(true);
         plot.xLabel("X value");
         plot.yLabel("Y value");
         plot.title("Plot title");

@@ -1,8 +1,10 @@
 #include "yapl.hpp"
 
 namespace yapl {
-    Plot::Plot()
-        : _grid(false), _draw_x_ticks(true), _draw_y_ticks(true) {
+    Plot::Plot() : _grid(false), 
+        _draw_x_ticks(true), 
+        _draw_y_ticks(true),
+        _grid_color(0.8, 0.8, 0.8) {
 
     }
 

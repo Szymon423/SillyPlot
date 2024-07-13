@@ -15,6 +15,18 @@ namespace yapl {
         const double& val_high_bound,
         const double& output_low_bound,
         const double& output_high_bound);
+    
+    /// @brief Function to calculate nice numbers for ticks
+    /// @param range The range of the data to be divided into ticks
+    /// @param round A boolean indicating whether to round the result to the nearest nice number
+    /// @return A "nice" number that can be used as a tick interval
+    double nice_numbers(double range, bool round);
+
+    /// @brief Function to convert a double to a nicely formatted string
+    /// @param value The double value to be converted
+    /// @param precision The precision to be used for the conversion
+    /// @return A string representation of the double value
+    std::string double_to_nice_string(double value, int precision = 6);
 
     /// @brief Function responsible for drawing plot 
     /// @param plot Plot object

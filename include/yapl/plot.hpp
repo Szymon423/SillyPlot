@@ -57,6 +57,10 @@ namespace yapl {
         /// @param state true - grid visible, false - grid invisible
         void grid(const bool state);
 
+        /// @brief Function to set grid color
+        /// @param grid_color desired color of grid
+        void setGridColor(Color grid_color);
+
         /// @brief Function to draw plot with cario
         /// @param plot refference to paint object
         /// @param path 
@@ -76,5 +80,8 @@ namespace yapl {
         std::optional<double> _y_lim_min;
         std::optional<double> _y_lim_max;
         bool _grid;
+        bool _draw_x_ticks;
+        bool _draw_y_ticks;
+        Color _grid_color;
     };
 }

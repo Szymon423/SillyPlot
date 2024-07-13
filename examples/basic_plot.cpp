@@ -10,6 +10,7 @@ int main() {
         plot.addData({100, 140}, {50, 50});
         plot.addData({190, 190, 240, 240, 190}, {10, 90, 90, 50, 50});
         plot.addData({270, 270, 320}, {90, 10, 10});
+        plot.grid(true);
         plot.xLabel("X value");
         plot.yLabel("Y value");
         plot.title("Yet Another Plot Library");

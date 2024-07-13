@@ -13,6 +13,7 @@ add_library(YAPL
     src/plot.cpp
     src/exception.cpp
     src/painter.cpp
+    src/color.cpp
 )
 
 # Set include directory

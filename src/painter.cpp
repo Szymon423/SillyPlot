@@ -10,6 +10,7 @@
 #include <iomanip>
 #include <limits>
 #include <cmath>
+#include <array>
 
 namespace yapl {
     double scale_value(const double& val, 
@@ -96,6 +97,18 @@ namespace yapl {
         constexpr uint16_t tick_disctance = 50;
         constexpr uint16_t tick_font_size = 12;
         constexpr uint16_t tick_text_offset = 10;
+        std::array<Color, 10> colors = {
+            Color(0.121568, 0.466667, 0.705882),  // Blue
+            Color(1.0, 0.498039, 0.054902),       // Orange
+            Color(0.172549, 0.627451, 0.172549),  // Green
+            Color(0.839216, 0.152941, 0.156863),  // Red
+            Color(0.580392, 0.403922, 0.741176),  // Purple
+            Color(0.549020, 0.337255, 0.294118),  // Brown
+            Color(0.890196, 0.466667, 0.760784),  // Pink
+            Color(0.498039, 0.498039, 0.498039),  // Gray
+            Color(0.737255, 0.741176, 0.133333),  // Olive
+            Color(0.090196, 0.745098, 0.811765)   // Cyan
+        };
 
         cairo_surface_t* surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, width, height);
         cairo_t* cr = cairo_create(surface);
@@ -306,7 +319,8 @@ namespace yapl {
             std::transform(std::execution::par_unseq, y.begin(), y.end(), y_scalled.begin(), scale_y_value_bound);
             
             // Blue color for lines
-            cairo_set_source_rgb(cr, 0, 0, 1); 
+            auto& picked_color = colors[i % colors.size()];
+            cairo_set_source_rgb(cr, picked_color.r, picked_color.g, picked_color.b); 
             
             // Rysowanie interpolowanych danych
             cairo_move_to(cr, x_scalled[0], height - y_scalled[0]);

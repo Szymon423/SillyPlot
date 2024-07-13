@@ -34,7 +34,7 @@ int main() {
     return 0;
 }
 ```
-
+![output](./img/example_plot.png)
 ## Dependencies
 - [cario](https://www.cairographics.org/)
 

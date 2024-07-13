@@ -67,10 +67,10 @@ namespace yapl {
     private:
         std::vector<std::vector<double>> _x;
         std::vector<std::vector<double>> _y;
-        std::string _x_label;
-        std::string _y_label;
-        std::string _title;
-        std::vector<std::string> _legend;
+        std::optional<std::string> _x_label;
+        std::optional<std::string> _y_label;
+        std::optional<std::string> _title;
+        std::optional<std::vector<std::string>> _legend;
         std::optional<double> _x_lim_min;
         std::optional<double> _x_lim_max;
         std::optional<double> _y_lim_min;

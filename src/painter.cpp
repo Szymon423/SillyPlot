@@ -24,8 +24,13 @@ namespace yapl {
     }
     
     void drawPlot(const Plot& plot, const std::filesystem::path& path, const uint16_t width, const uint16_t height) {
-        constexpr uint16_t border_offset = 40;
+        constexpr uint16_t border_top_offset = 60;
+        constexpr uint16_t border_bottom_offset = 60;
+        constexpr uint16_t border_left_offset = 80;
+        constexpr uint16_t border_right_offset = 80;
         constexpr uint16_t internal_border_offset = 10;
+        constexpr uint16_t title_font_size = 20;
+        constexpr uint16_t label_font_size = 14;
         cairo_surface_t* surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, width, height);
         cairo_t* cr = cairo_create(surface);
 
@@ -38,23 +43,23 @@ namespace yapl {
         cairo_set_line_width(cr, 1.0);
 
         // bottom
-        cairo_move_to(cr, border_offset, height - border_offset);
-        cairo_line_to(cr, width - border_offset, height - border_offset);
+        cairo_move_to(cr, border_left_offset, height - border_bottom_offset);
+        cairo_line_to(cr, width - border_right_offset, height - border_bottom_offset);
         cairo_stroke(cr);
 
         // right
-        cairo_move_to(cr, width - border_offset, height - border_offset);
-        cairo_line_to(cr, width - border_offset, border_offset);
+        cairo_move_to(cr, width - border_right_offset, height - border_bottom_offset);
+        cairo_line_to(cr, width - border_right_offset, border_top_offset);
         cairo_stroke(cr);
 
         // top
-        cairo_move_to(cr, width - border_offset, border_offset);
-        cairo_line_to(cr, border_offset, border_offset);
+        cairo_move_to(cr, width - border_right_offset, border_top_offset);
+        cairo_line_to(cr, border_left_offset, border_top_offset);
         cairo_stroke(cr);
 
         // left
-        cairo_move_to(cr, border_offset, border_offset);
-        cairo_line_to(cr, border_offset, height - border_offset);
+        cairo_move_to(cr, border_left_offset, border_top_offset);
+        cairo_line_to(cr, border_left_offset, height - border_bottom_offset);
         cairo_stroke(cr);
 
         // Draw data
@@ -89,16 +94,29 @@ namespace yapl {
             // Prepare length value
             const size_t length = plot._x[i].size();
 
+            // Prepare area size for plots
+            double plot_x_start = border_left_offset + internal_border_offset;
+            double plot_x_end = width - plot_x_start - border_right_offset - internal_border_offset;
+            double plot_y_start = border_bottom_offset + internal_border_offset;
+            double plot_y_end = height - plot_y_start - border_top_offset - internal_border_offset;
             // Prepare scalled vector for X
             auto& x = plot._x[i];
             std::vector<double> x_scalled(length);
-            auto scale_x_value_bound = std::bind(scale_value, std::placeholders::_1, x_min, x_max, border_offset, width - 2 * border_offset);
+            
+            // Binding data to scale function 
+            auto scale_x_value_bound = std::bind(scale_value, std::placeholders::_1, x_min, x_max, plot_x_start, plot_x_end);
+            
+            // Now we applay scale function to each point, but parallel and unsequentially
             std::transform(std::execution::par_unseq, x.begin(), x.end(), x_scalled.begin(), scale_x_value_bound);
 
             // Prepare scalled vector for Y
             auto& y = plot._y[i];
             std::vector<double> y_scalled(length);
-            auto scale_y_value_bound = std::bind(scale_value, std::placeholders::_1, y_min, y_max, border_offset, height - 2 * border_offset);
+            
+            // Binding data to scale function 
+            auto scale_y_value_bound = std::bind(scale_value, std::placeholders::_1, y_min, y_max, plot_y_start, plot_y_end);
+
+            // Now we applay scale function to each point, but parallel and unsequentially
             std::transform(std::execution::par_unseq, y.begin(), y.end(), y_scalled.begin(), scale_y_value_bound);
             
             // Blue color for lines
@@ -112,18 +130,60 @@ namespace yapl {
             cairo_stroke(cr);
         }
 
-        // Add labels and title
-        cairo_select_font_face(cr, "Sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
-        cairo_set_font_size(cr, 20);
-        cairo_move_to(cr, width / 2 - 50, 30);
-        cairo_show_text(cr, plot._title.c_str());
+        // Add title if there is title provided
+        if (plot._title.has_value()) {
+            cairo_set_source_rgb(cr, 0.0, 0.0, 0.0);
+            cairo_select_font_face(cr, "Sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
+            cairo_set_font_size(cr, title_font_size);
+            
+            // Title params
+            cairo_text_extents_t extents;
+            cairo_text_extents(cr, plot._title.value().c_str(), &extents);
 
-        cairo_set_font_size(cr, 15);
-        cairo_move_to(cr, width / 2 - 50, height - 20);
-        cairo_show_text(cr, plot._x_label.c_str());
+            // Calculate the position to start drawing the text
+            double title_x = (width - extents.width) / 2 - extents.x_bearing;
+            double title_y = (border_top_offset + title_font_size) / 2;
 
-        cairo_move_to(cr, 10, height / 2);
-        cairo_show_text(cr, plot._y_label.c_str());
+            // Move to the calculated position and show the text
+            cairo_move_to(cr, title_x, title_y);
+            cairo_show_text(cr, plot._title.value().c_str());
+        }
+
+        if (plot._x_label.has_value()) {
+            // Set font to Sans, blac, proper size
+            cairo_set_source_rgb(cr, 0.0, 0.0, 0.0);
+            cairo_select_font_face(cr, "Sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
+            cairo_set_font_size(cr, label_font_size);
+
+            // x_label params
+            cairo_text_extents_t extents;
+            cairo_text_extents(cr, plot._x_label.value().c_str(), &extents);
+
+            // Calculate the position to start drawing the text
+            double x_label_x = (width - extents.width) / 2 - extents.x_bearing;
+            double x_label_y = height - border_bottom_offset / 2;
+            
+            cairo_move_to(cr, x_label_x, x_label_y);
+            cairo_show_text(cr, plot._x_label.value().c_str());
+        }
+        
+        if (plot._y_label.has_value()) {
+            // Set font to Sans, blac, proper size
+            cairo_set_source_rgb(cr, 0.0, 0.0, 0.0);
+            cairo_select_font_face(cr, "Sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
+            cairo_set_font_size(cr, label_font_size);
+
+            // y_label params
+            cairo_text_extents_t extents;
+            cairo_text_extents(cr, plot._y_label.value().c_str(), &extents);
+
+            // Calculate the position to start drawing the text
+            double y_label_x = (border_left_offset - extents.width) / 2 - extents.x_bearing;
+            double y_label_y = (height + title_font_size) / 2;
+            
+            cairo_move_to(cr, y_label_x, y_label_y);
+            cairo_show_text(cr, plot._y_label.value().c_str());
+        }
 
         cairo_destroy(cr);
         cairo_surface_write_to_png(surface, path.c_str());

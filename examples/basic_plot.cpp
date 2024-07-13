@@ -12,6 +12,7 @@ int main() {
         plot.xLabel("X value");
         plot.yLabel("Y value");
         plot.title("Yet Another Plot Library");
+        plot.legend({"Yet", "Another", "Plot", "Library"});
         plot.setLabelMaker([](double val) -> std::string {
             return "X: " + std::to_string((int)val);
         });

@@ -1,6 +1,8 @@
 #pragma once
 
 #include "yapl.hpp"
+#include <cairo.h>
+#include <cairo-svg.h>
 
 namespace yapl {
     /// @brief 
@@ -27,6 +29,16 @@ namespace yapl {
     /// @param precision The precision to be used for the conversion
     /// @return A string representation of the double value
     std::string double_to_nice_string(double value, int precision = 6);
+
+    /// @brief Draws a rounded rectangle on the given Cairo context.
+    /// @param cr The Cairo drawing context.
+    /// @param x The X coordinate of the top-left corner of the rectangle.
+    /// @param y The Y coordinate of the top-left corner of the rectangle.
+    /// @param width The width of the rectangle.
+    /// @param height The height of the rectangle.
+    /// @param radius The radius of the rounded corners.
+    /// @param fill true - fills rectangle, false does not
+    void draw_rounded_rectangle(cairo_t* cr, double x, double y, double width, double height, double radius, bool fill = false);
 
     /// @brief Function responsible for drawing plot 
     /// @param plot Plot object

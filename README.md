@@ -31,7 +31,6 @@ int main() {
         plot.setLabelMaker([](double val) -> std::string {
             return "X: " + std::to_string((int)val);
         });
-        std::cout << "Saving plot" << std::endl;
         plot.save("/YAPL/img/test/example_plot.png", 800, 600);
     }
     catch (const yapl::Exception& e) {

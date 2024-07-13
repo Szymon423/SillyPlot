@@ -85,6 +85,26 @@ namespace yapl {
         return str;
     }
     
+    void draw_rounded_rectangle(cairo_t* cr, double x, double y, double width, double height, double radius, bool fill = false) {
+        // https://www.cairographics.org/samples/rounded_rectangle/
+        double degrees = M_PI / 180.0;
+        cairo_new_path(cr);
+        cairo_new_sub_path(cr);
+        cairo_arc(cr, x + width - radius, y + radius, radius, -90 * degrees, 0 * degrees);
+        cairo_arc(cr, x + width - radius, y + height - radius, radius, 0 * degrees, 90 * degrees);
+        cairo_arc(cr, x + radius, y + height - radius, radius, 90 * degrees, 180 * degrees);
+        cairo_arc(cr, x + radius, y + radius, radius, 180 * degrees, 270 * degrees);
+        cairo_close_path(cr);
+
+        // Fill and/or stroke the path based on the fill parameter
+        if (fill) {
+            cairo_fill_preserve(cr);
+        } 
+        else {
+            cairo_stroke(cr);
+        }
+    }
+
     void drawPlot(const Plot& plot, const std::filesystem::path& path, const uint16_t width, const uint16_t height) {
         constexpr uint16_t border_top_offset = 80;
         constexpr uint16_t border_bottom_offset = 80;
@@ -97,6 +117,10 @@ namespace yapl {
         constexpr uint16_t tick_disctance = 50;
         constexpr uint16_t tick_font_size = 12;
         constexpr uint16_t tick_text_offset = 10;
+        constexpr uint16_t legend_text_size = 10;
+        constexpr uint16_t legend_internal_offset = 10;
+        constexpr uint16_t legend_line_length = 20;
+
         std::array<Color, 10> colors = {
             Color(0.121568, 0.466667, 0.705882),  // Blue
             Color(1.0, 0.498039, 0.054902),       // Orange
@@ -383,6 +407,49 @@ namespace yapl {
             
             cairo_move_to(cr, y_label_x, y_label_y);
             cairo_show_text(cr, plot._y_label.value().c_str());
+        }
+
+        // Add legend if provided
+        if (plot._legend.has_value()) {
+            auto& legend = plot._legend.value();
+            
+            // fing longest item in legend
+            auto longest_found = std::max_element(legend.begin(), legend.end(),
+                [](const std::string& a, const std::string& b) {
+                    return a.size() < b.size();
+                }
+            );
+            std::string longest_item = *longest_found;
+
+            cairo_text_extents_t extents;
+            cairo_text_extents(cr, longest_item.c_str(), &extents);
+
+            // calculate necessary legend rectangle size
+            double legend_width = extents.width + 2 * legend_internal_offset + legend_line_length;
+            double legend_height = 2 * extents.height * legend.size() + legend_internal_offset * (legend.size() - 1);
+
+            double legend_x = width - border_right_offset - legend_width;
+            double legend_y = height - border_bottom_offset - legend_height;
+
+            // Set the legend background color as white
+            cairo_set_source_rgb(cr, 1.0, 1.0, 1.0); 
+            cairo_set_line_width(cr, 2);
+            
+            // draw rectangle for background
+            draw_rounded_rectangle(cr, legend_x, legend_y, legend_width, legend_height, 10, true);
+
+            // draw rectangle border as grey
+            cairo_set_source_rgb(cr, 0.8, 0.8, 0.8); 
+            draw_rounded_rectangle(cr, legend_x, legend_y, legend_width, legend_height, 10);
+
+            for (int i = 0; i < legend.size(); i++) {
+                // color for lines
+                auto& picked_color = colors[i % colors.size()];
+                cairo_set_source_rgb(cr, picked_color.r, picked_color.g, picked_color.b); 
+                cairo_move_to(cr, legend_x + legend_internal_offset,                      legend_y + legend_internal_offset + (i + 1) * (extents.height + legend_internal_offset));
+                cairo_line_to(cr, legend_x + legend_internal_offset + legend_line_length, legend_y + legend_internal_offset + (i + 1) * (extents.height + legend_internal_offset));
+                cairo_stroke(cr);
+            }
         }
 
         cairo_destroy(cr);

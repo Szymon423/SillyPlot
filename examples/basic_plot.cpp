@@ -14,7 +14,7 @@ int main() {
         plot.yLabel("Y value");
         plot.title("Yet Another Plot Library");
         std::cout << "Saving plot" << std::endl;
-        plot.save("/YAPL/img/test/example_plot.png", 600, 400);
+        plot.save("/YAPL/img/test/example_plot.png", 800, 600);
     }
     catch (const yapl::Exception& e) {
         std::cout << "Caught error during plot generation" << std::endl;

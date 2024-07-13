@@ -11,6 +11,30 @@ Why to choose this library when you can use `python` and all it goodness like `m
 
 Well.. I also do not know. But maybe when writing somethig that need to work without any other programs like amazing `gnuplot`, running on constrained hardware resources system maybe it is worth checking out on this something.
 
+## Example
+
+```cpp
+#include "yapl.hpp"
+#include <iostream>
+
+int main() {
+    try {
+        yapl::Plot plot;
+        plot.addData({1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, {10, 20, 30, 20, 10, 20, 30, 20, 10, 20});
+        plot.addData({1, 2, 3, 4, 5}, {5, 10, 15, 20, 25});
+        plot.xLabel("X value");
+        plot.yLabel("Y value");
+        plot.title("Plot title");
+        std::cout << "Saving plot" << std::endl;
+        plot.save("my_plot.png", 800, 600);
+    }
+    catch (const yapl::Exception& e) {
+        std::cout << "Caught error during plot generation" << std::endl;
+    }
+    return 0;
+}
+```
+
 ## Dependencies
 - [cario](https://www.cairographics.org/)
 

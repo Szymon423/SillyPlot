@@ -5,6 +5,7 @@
 #include <filesystem>
 #include <utility>
 #include <optional>
+#include <functional>
 
 namespace yapl {
     class Plot {
@@ -33,7 +34,7 @@ namespace yapl {
         /// @param label plot title 
         void title(const std::string& label);
 
-        /// @brief Function to set title
+        /// @brief Function to set legend
         /// @param label plot title 
         void legend(const std::vector<std::string>& legend);
         
@@ -61,6 +62,10 @@ namespace yapl {
         /// @param grid_color desired color of grid
         void setGridColor(Color grid_color);
 
+        /// @brief Function to set label maker function defining how user want them to look like
+        /// @param label_maker function like std::string label_maker(double) which makes labels 
+        void setLabelMaker(std::function<std::string(double)> label_maker);
+
         /// @brief Function to draw plot with cario
         /// @param plot refference to paint object
         /// @param path 
@@ -82,6 +87,7 @@ namespace yapl {
         bool _grid;
         bool _draw_x_ticks;
         bool _draw_y_ticks;
+        std::optional<std::function<std::string(double)>> _label_maker;
         Color _grid_color;
     };
 }

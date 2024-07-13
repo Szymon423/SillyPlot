@@ -14,6 +14,9 @@ int main() {
         plot.xLabel("X value");
         plot.yLabel("Y value");
         plot.title("Yet Another Plot Library");
+        plot.setLabelMaker([](double val) -> std::string {
+            return "X: " + std::to_string(val);
+        });
         std::cout << "Saving plot" << std::endl;
         plot.save("/YAPL/img/test/example_plot.png", 800, 600);
     }

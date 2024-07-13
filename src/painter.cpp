@@ -85,8 +85,8 @@ namespace yapl {
     }
     
     void drawPlot(const Plot& plot, const std::filesystem::path& path, const uint16_t width, const uint16_t height) {
-        constexpr uint16_t border_top_offset = 60;
-        constexpr uint16_t border_bottom_offset = 100;
+        constexpr uint16_t border_top_offset = 80;
+        constexpr uint16_t border_bottom_offset = 80;
         constexpr uint16_t border_left_offset = 100;
         constexpr uint16_t border_right_offset = 100;
         constexpr uint16_t internal_border_offset = 10;
@@ -248,6 +248,13 @@ namespace yapl {
 
                     // get string with proper tick text with proper precission
                     std::string tick_text = double_to_nice_string(x, precission);
+
+                    // if provided function to make label then use it
+                    if (plot._label_maker.has_value()) {
+                        auto& label_maker = plot._label_maker.value();
+                        tick_text = label_maker(x);
+                    }
+
                     cairo_text_extents_t extents;
                     cairo_text_extents(cr, tick_text.c_str(), &extents);
 

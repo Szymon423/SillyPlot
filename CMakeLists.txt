@@ -22,7 +22,7 @@ target_include_directories(YAPL PUBLIC include ${CAIRO_INCLUDE_DIRS})
 # Linkowanie biblioteki Cairo do YAPL
 target_link_libraries(YAPL PRIVATE ${CAIRO_LIBRARIES})
 
-# Add example
+# Add basic example
 add_executable(example examples/basic_plot.cpp)
 target_link_libraries(example YAPL)
 

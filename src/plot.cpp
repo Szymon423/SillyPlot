@@ -70,4 +70,8 @@ namespace yapl {
     void Plot::grid(const bool state) {
         _grid = state;
     }
+
+    void  Plot::setLabelMaker(std::function<std::string(double)> label_maker) {
+        _label_maker = label_maker;
+    }
 }

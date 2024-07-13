@@ -1,0 +1,22 @@
+site_name: YAPL
+site_description: 'Documentation for YAPL'
+site_author: 'Szymon Wąchała'
+
+nav:
+    - Home: index.md
+    - User Guide: installation.md
+    - Examples: examples.md
+    - API Reference: 
+        - Plot: api/plot.md
+        - Color: api/color.md
+    - About: about.md
+
+markdown_extensions:
+    - toc:
+        permalink: True
+    - tables
+    - admonition
+    - codehilite
+
+plugins:
+    - search

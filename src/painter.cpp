@@ -117,7 +117,9 @@ namespace yapl {
         constexpr uint16_t tick_disctance = 50;
         constexpr uint16_t tick_font_size = 12;
         constexpr uint16_t tick_text_offset = 10;
-        constexpr uint16_t legend_text_size = 10;
+        constexpr uint16_t legend_font_size = 10;
+        constexpr uint16_t legend_distance_between_text = 4;
+        constexpr uint16_t legend_distance_between_line_and_text = 4;
         constexpr uint16_t legend_internal_offset = 10;
         constexpr uint16_t legend_line_length = 20;
 
@@ -421,15 +423,67 @@ namespace yapl {
             );
             std::string longest_item = *longest_found;
 
+            cairo_select_font_face(cr, "Sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
+            cairo_set_font_size(cr, legend_font_size);
+
             cairo_text_extents_t extents;
             cairo_text_extents(cr, longest_item.c_str(), &extents);
 
-            // calculate necessary legend rectangle size
-            double legend_width = extents.width + 2 * legend_internal_offset + legend_line_length;
-            double legend_height = 2 * extents.height * legend.size() + legend_internal_offset * (legend.size() - 1);
 
-            double legend_x = width - border_right_offset - legend_width;
-            double legend_y = height - border_bottom_offset - legend_height;
+            double legend_height = 2 * legend_internal_offset + legend.size() * extents.height + (legend.size() - 1) * legend_distance_between_text;
+            double legend_width = 2 * legend_internal_offset + legend_line_length + legend_distance_between_line_and_text + extents.width;
+
+            // initi legend x and y with in top right position
+            double legend_x = width - border_right_offset - legend_width - internal_border_offset;
+            double legend_y = border_top_offset + internal_border_offset;
+
+            switch (plot._legend_position) {
+                case LegendPosition::TOP_LEFT: { 
+                    legend_x = border_left_offset + internal_border_offset;
+                    legend_y = border_top_offset + internal_border_offset;
+                    break;
+                }
+                case LegendPosition::TOP_MIDDLE: { 
+                    legend_x = (width - border_right_offset - legend_width + border_left_offset) / 2;
+                    legend_y = border_top_offset + internal_border_offset;
+                    break;
+                }
+                case LegendPosition::TOP_RIGHT: { 
+                    legend_x = width - border_right_offset - legend_width - internal_border_offset;
+                    legend_y = border_top_offset + internal_border_offset;
+                    break;
+                }
+                case LegendPosition::MIDDLE_LEFT: {
+                    legend_x = border_left_offset + internal_border_offset;
+                    legend_y = (internal_border_offset + height - internal_border_offset - legend_height) / 2;
+                    break;
+                }
+                case LegendPosition::MIDDLE_RIGHT: { 
+                    legend_x = width - border_right_offset - legend_width - internal_border_offset;
+                    legend_y = (internal_border_offset + height - internal_border_offset - legend_height) / 2;
+                    break;
+                }
+                case LegendPosition::BOTTOM_LEFT: { 
+                    legend_x = border_left_offset + internal_border_offset;
+                    legend_y = height - border_top_offset - internal_border_offset - legend_height;
+                    break;
+                }
+                case LegendPosition::BOTTOM_MIDDLE: {
+                    legend_x = (width - border_right_offset - legend_width + border_left_offset) / 2;
+                    legend_y = height - border_top_offset - internal_border_offset - legend_height;
+                    break;
+                }
+                case LegendPosition::BOTTOM_RIGHT: { 
+                    legend_x = width - border_right_offset - legend_width - internal_border_offset;
+                    legend_y = height - border_top_offset - internal_border_offset - legend_height;
+                    break;
+                }
+                default: {
+                    legend_x = width - border_right_offset - legend_width - internal_border_offset;
+                    legend_y = border_top_offset + internal_border_offset;
+                    break;
+                }
+            }
 
             // Set the legend background color as white
             cairo_set_source_rgb(cr, 1.0, 1.0, 1.0); 
@@ -443,12 +497,15 @@ namespace yapl {
             draw_rounded_rectangle(cr, legend_x, legend_y, legend_width, legend_height, 10);
 
             for (int i = 0; i < legend.size(); i++) {
-                // color for lines
                 auto& picked_color = colors[i % colors.size()];
                 cairo_set_source_rgb(cr, picked_color.r, picked_color.g, picked_color.b); 
-                cairo_move_to(cr, legend_x + legend_internal_offset,                      legend_y + legend_internal_offset + (i + 1) * (extents.height + legend_internal_offset));
-                cairo_line_to(cr, legend_x + legend_internal_offset + legend_line_length, legend_y + legend_internal_offset + (i + 1) * (extents.height + legend_internal_offset));
+                double current_y = legend_y + legend_internal_offset + extents.height / 2 + extents.height * i + legend_distance_between_text * i;
+                cairo_move_to(cr, legend_x + legend_internal_offset, current_y);
+                cairo_line_to(cr, legend_x + legend_internal_offset + legend_line_length, current_y);
                 cairo_stroke(cr);
+                cairo_move_to(cr, legend_x + legend_internal_offset + legend_line_length + legend_distance_between_line_and_text, current_y + extents.height / 2);
+                cairo_set_source_rgb(cr, 0.0, 0.0, 0.0); 
+                cairo_show_text(cr, legend[i].c_str());
             }
         }
 

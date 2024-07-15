@@ -36,7 +36,7 @@ namespace yapl {
 
         /// @brief Function to set legend
         /// @param label plot title 
-        void legend(const std::vector<std::string>& legend);
+        void legend(const std::vector<std::string>& legend, const LegendPosition _legend_position = LegendPosition::TOP_RIGHT);
         
         /// @brief Function to save plot as image
         /// @param path path under which save image
@@ -89,5 +89,6 @@ namespace yapl {
         bool _draw_y_ticks;
         std::optional<std::function<std::string(double)>> _label_maker;
         Color _grid_color;
+        LegendPosition _legend_position;
     };
 }

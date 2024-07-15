@@ -45,12 +45,13 @@ namespace yapl {
         _title = label;
     }
 
-    void Plot::legend(const std::vector<std::string>& legend) {
+    void Plot::legend(const std::vector<std::string>& legend, const LegendPosition legend_position) {
         if (legend.size() != _x.size()) {
             throw Exception("Legend size does not metch data size");
         }
 
         _legend = legend;
+        _legend_position = legend_position;
     }
 
     void Plot::save(const std::filesystem::path& path, const uint16_t width, const uint16_t height) {

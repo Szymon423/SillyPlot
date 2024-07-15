@@ -97,12 +97,14 @@ plt.title("Plot title");
 ## legend
 Function to set legend.
 ```cpp
-void legend(const std::vector<std::string>& legend)
+void legend(const std::vector<std::string>& legend, 
+    const LegendPosition legend_position = LegendPosition::TOP_RIGHT)
 ```
 
 **Parameters:**
 
 - `legend` (`const std::vector<std::string>&`): vector of strings displayed with proper colors determining legend for plot. Legend items count must be equal to datasets count.
+- `legend_position` (`const LegendPosition`): legend position 
 
 **Przykład:**
 

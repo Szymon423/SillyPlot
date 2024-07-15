@@ -9,6 +9,7 @@ nav:
     - API Reference: 
         - Plot: api/plot.md
         - Color: api/color.md
+        - Legend: api/legend.md
     - About: about.md
 
 markdown_extensions:

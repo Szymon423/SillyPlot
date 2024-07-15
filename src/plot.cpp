@@ -72,7 +72,11 @@ namespace yapl {
         _grid = state;
     }
 
-    void  Plot::setLabelMaker(std::function<std::string(double)> label_maker) {
+    void Plot::setLabelMaker(std::function<std::string(double)> label_maker) {
         _label_maker = label_maker;
+    }
+
+    void Plot::setColorMaker(std::function<Color(double, double)> color_maker) {
+        _color_maker = color_maker;
     }
 }

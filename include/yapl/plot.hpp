@@ -66,6 +66,10 @@ namespace yapl {
         /// @param label_maker function like std::string label_maker(double) which makes labels 
         void setLabelMaker(std::function<std::string(double)> label_maker);
 
+        /// @brief Function to set color maker function defining data on plot should be colored
+        /// @param color_maker function like Color color_maker(double, double) which defines data color on plot
+        void setColorMaker(std::function<Color(double, double)> color_maker);
+
         /// @brief Function to draw plot with cario
         /// @param plot refference to paint object
         /// @param path 
@@ -88,6 +92,7 @@ namespace yapl {
         bool _draw_x_ticks;
         bool _draw_y_ticks;
         std::optional<std::function<std::string(double)>> _label_maker;
+        std::optional<std::function<Color(double, double)>> _color_maker;
         Color _grid_color;
         LegendPosition _legend_position;
     };

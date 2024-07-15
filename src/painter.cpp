@@ -207,6 +207,13 @@ namespace yapl {
             double y_tick_start = std::ceil(y_min / tick_spacing) * tick_spacing;
             double y_tick_end = std::floor(y_max / tick_spacing) * tick_spacing;
 
+            std::cout << "y_min: " << y_min << std::endl;
+            std::cout << "y_max: " << y_max << std::endl;
+            std::cout << "tick_spacing: " << tick_spacing << std::endl;
+            std::cout << "y_tick_start: " << y_tick_start << std::endl;
+            std::cout << "y_tick_end: " << y_tick_end << std::endl;
+
+
             // Set font to Sans, black, proper size
             cairo_select_font_face(cr, "Sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
             cairo_set_font_size(cr, tick_font_size);
@@ -226,7 +233,7 @@ namespace yapl {
                     // calculate ticks text precission
                     int precission = 0;
                     if (y_range != 0) {
-                        precission = std::max(precission, static_cast<int>(-std::floor(std::log10(y_range))));
+                        precission = std::max(precission, static_cast<int>(-std::floor(std::log10(y_range / 10.0))));
                     }
 
                     // get string with proper tick text with proper precission
@@ -282,7 +289,7 @@ namespace yapl {
                     // calculate ticks text precission
                     int precission = 0;
                     if (x_range != 0) {
-                        precission = std::max(precission, static_cast<int>(-std::floor(std::log10(x_range))));
+                        precission = std::max(precission, static_cast<int>(-std::floor(std::log10(x_range / 10.0))));
                     }
 
                     // get string with proper tick text with proper precission
@@ -343,15 +350,26 @@ namespace yapl {
 
             // Now we applay scale function to each point, but parallel and unsequentially
             std::transform(std::execution::par_unseq, y.begin(), y.end(), y_scalled.begin(), scale_y_value_bound);
-            
-            // Blue color for lines
-            auto& picked_color = colors[i % colors.size()];
-            cairo_set_source_rgb(cr, picked_color.r, picked_color.g, picked_color.b); 
+
+            // Color for lines in no color maker is defined
+            if (!plot._color_maker.has_value()) {
+                auto& picked_color = colors[i % colors.size()];
+                cairo_set_source_rgb(cr, picked_color.r, picked_color.g, picked_color.b); 
+            }
             
             // Rysowanie interpolowanych danych
             cairo_move_to(cr, x_scalled[0], height - y_scalled[0]);
             for (size_t j = 1; j < x_scalled.size(); ++j) {
-                cairo_line_to(cr, (uint16_t)x_scalled[j], height - (uint16_t)y_scalled[j]);
+                // Color for lines if color maker is defined
+                if (plot._color_maker.has_value()) {
+                    auto& color_maker = plot._color_maker.value();
+                    Color picked_color = color_maker(x[j - 1], y[j - 1]);
+                    cairo_set_source_rgb(cr, picked_color.r, picked_color.g, picked_color.b); 
+                }
+
+                cairo_line_to(cr, x_scalled[j], height - y_scalled[j]);
+                cairo_stroke(cr);
+                cairo_move_to(cr, x_scalled[j], height - y_scalled[j]);
             }
             cairo_stroke(cr);
         }

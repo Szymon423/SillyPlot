@@ -70,6 +70,14 @@ namespace yapl {
         /// @param color_maker function like Color color_maker(double, double) which defines data color on plot
         void setColorMaker(std::function<Color(double, double)> color_maker);
 
+        /// @brief Function to set spacing between ticks on X axis
+        /// @param tick_spacing spacing between ticks on X axis, must be greater than 0.0
+        void setXTickSpacing(const double tick_spacing);
+
+        /// @brief Function to set spacing between ticks on Y axis
+        /// @param tick_spacing spacing between ticks on Y axis, must be greater than 0.0
+        void setYTickSpacing(const double tick_spacing);
+
         /// @brief Function to draw plot with cario
         /// @param plot refference to paint object
         /// @param path 
@@ -95,5 +103,7 @@ namespace yapl {
         std::optional<std::function<Color(double, double)>> _color_maker;
         Color _grid_color;
         LegendPosition _legend_position;
+        std::optional<double> _x_tick_spacing;
+        std::optional<double> _y_tick_spacing;
     };
 }

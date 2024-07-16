@@ -79,4 +79,18 @@ namespace yapl {
     void Plot::setColorMaker(std::function<Color(double, double)> color_maker) {
         _color_maker = color_maker;
     }
+
+    void Plot::setXTickSpacing(const double tick_spacing) {
+        if (tick_spacing <= 0.0) {
+            throw Exception("Ticks spacing for X Axis must be grater than 0.0.");
+        }
+        _x_tick_spacing = tick_spacing;
+    }
+
+    void Plot::setYTickSpacing(const double tick_spacing) {
+        if (tick_spacing <= 0.0) {
+            throw Exception("Ticks spacing for X Axis must be grater than 0.0.");
+        }
+        _y_tick_spacing = tick_spacing;
+    }
 }

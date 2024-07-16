@@ -55,9 +55,11 @@ void test_time_plot() {
             time_t t = val;
             std::tm *tm_ptr = std::localtime(&t);
             std::stringstream ss;
-            ss << std::put_time(tm_ptr, "%H:%M:%S");
+            ss << std::put_time(tm_ptr, "%Y-%m-%d %H:%M:%S");
             return ss.str();
         });
+        plot.setXTickSpacing(60 * 4); // 60s * 4 = 4min
+        plot.setYTickSpacing(200); 
         plot.save("/YAPL/img/test/test_time_output.png", 1280, 720);
     }
     catch (yapl::Exception& e) {

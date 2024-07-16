@@ -235,3 +235,64 @@ plt.setLabelMaker([](double val) -> std::string {
     return "x: " + std::to_string(val);
 });
 ```
+
+
+## setColorMaker
+Function to set color maker function defining data on plot should be colored
+```cpp
+void setColorMaker(std::function<Color(double, double)> color_maker)
+```
+
+**Parameters:**
+
+- `color_maker` (`std::function<Color(double, double)>`): function like yapl::Color color_maker(double x, double y) generates color based on coordinates.
+
+**Przykład:**
+
+```cpp
+yapl::Plot plt;
+plt.addData({{1, 1}, {2, 2}, {3, 3}});
+plot.setColorMaker([](double x, double y) -> yapl::Color {
+    if (y >= 3) return yapl::Color(1.0, 0.0, 0.0);
+    if (y >= 2) return yapl::Color(1.0, 0.8, 0.0);
+    return yapl::Color(0.0, 0.0, 1.0);
+});
+```
+
+
+## setXTickSpacing
+Function to set spacing between ticks on X axis.
+```cpp
+void setXTickSpacing(const double tick_spacing)
+```
+
+**Parameters:**
+
+- `tick_spacing` (`const double`): spacing between ticks on X axis, must be greater than 0.0
+
+**Przykład:**
+
+```cpp
+yapl::Plot plt;
+plt.addData({{1, 1}, {2, 2}, {3, 3}});
+plt.setXTickSpacing(1.0);
+```
+
+
+## setYTickSpacing
+Function to set spacing between ticks on Y axis.
+```cpp
+void setYTickSpacing(const double tick_spacing)
+```
+
+**Parameters:**
+
+- `tick_spacing` (`const double`): spacing between ticks on Y axis, must be greater than 0.0
+
+**Przykład:**
+
+```cpp
+yapl::Plot plt;
+plt.addData({{1, 1}, {2, 2}, {3, 3}});
+plt.setYTickSpacing(1.0);
+```

@@ -205,7 +205,7 @@ namespace yapl {
             double y_range = y_max - y_min;
 
             // calculate tick spacing
-            double tick_spacing = nice_number(y_range / 10.0, true); 
+            double tick_spacing = plot._y_tick_spacing.has_value() ? plot._y_tick_spacing.value() : nice_number(y_range / 7.0, true); 
             double y_tick_start = std::ceil(y_min / tick_spacing) * tick_spacing;
             double y_tick_end = std::floor(y_max / tick_spacing) * tick_spacing;
 
@@ -235,7 +235,7 @@ namespace yapl {
                     // calculate ticks text precission
                     int precission = 0;
                     if (y_range != 0) {
-                        precission = std::max(precission, static_cast<int>(-std::floor(std::log10(y_range / 10.0))));
+                        precission = std::max(precission, static_cast<int>(-std::floor(std::log10(y_range / 7.0))));
                     }
 
                     // get string with proper tick text with proper precission
@@ -269,7 +269,7 @@ namespace yapl {
             double x_range = x_max - x_min;
 
             // calculate tick spacing
-            double tick_spacing = nice_number(x_range / 10.0, true); 
+            double tick_spacing = plot._x_tick_spacing.has_value() ? plot._x_tick_spacing.value() : nice_number(x_range / 7.0, true); 
             double x_tick_start = std::ceil(x_min / tick_spacing) * tick_spacing;
             double x_tick_end = std::floor(x_max / tick_spacing) * tick_spacing;
            
@@ -292,7 +292,7 @@ namespace yapl {
                     // calculate ticks text precission
                     int precission = 0;
                     if (x_range != 0) {
-                        precission = std::max(precission, static_cast<int>(-std::floor(std::log10(x_range / 10.0))));
+                        precission = std::max(precission, static_cast<int>(-std::floor(std::log10(x_range / 7.0))));
                     }
 
                     // get string with proper tick text with proper precission

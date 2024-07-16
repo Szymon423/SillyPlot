@@ -108,8 +108,8 @@ namespace yapl {
     void drawPlot(const Plot& plot, const std::filesystem::path& path, const uint16_t width, const uint16_t height) {
         constexpr uint16_t border_top_offset = 80;
         constexpr uint16_t border_bottom_offset = 80;
-        constexpr uint16_t border_left_offset = 100;
-        constexpr uint16_t border_right_offset = 100;
+        constexpr uint16_t border_left_offset = 120;
+        constexpr uint16_t border_right_offset = 120;
         constexpr uint16_t internal_border_offset = 10;
         constexpr uint16_t title_font_size = 20;
         constexpr uint16_t label_font_size = 14;
@@ -122,6 +122,8 @@ namespace yapl {
         constexpr uint16_t legend_distance_between_line_and_text = 4;
         constexpr uint16_t legend_internal_offset = 10;
         constexpr uint16_t legend_line_length = 20;
+        double y_label_additional_offset = 0.0;
+        double x_label_additional_offset = 0.0;
 
         std::array<Color, 10> colors = {
             Color(0.121568, 0.466667, 0.705882),  // Blue
@@ -240,6 +242,7 @@ namespace yapl {
                     std::string tick_text = double_to_nice_string(y, precission);
                     cairo_text_extents_t extents;
                     cairo_text_extents(cr, tick_text.c_str(), &extents);
+                    y_label_additional_offset = std::max(y_label_additional_offset, extents.height);
 
                     // Calculate the position to start drawing the text
                     double tick_x = border_left_offset - tick_length - tick_text_offset - extents.width;
@@ -303,6 +306,7 @@ namespace yapl {
 
                     cairo_text_extents_t extents;
                     cairo_text_extents(cr, tick_text.c_str(), &extents);
+                    x_label_additional_offset = std::max(x_label_additional_offset, extents.height);
 
                     // Calculate the position to start drawing the text
                     double tick_x = x_pos - extents.width / 2;
@@ -405,7 +409,7 @@ namespace yapl {
 
             // Calculate the position to start drawing the text
             double x_label_x = (width - extents.width) / 2 - extents.x_bearing;
-            double x_label_y = height - border_bottom_offset / 2;
+            double x_label_y = height - border_bottom_offset / 2 + x_label_additional_offset;
             
             cairo_move_to(cr, x_label_x, x_label_y);
             cairo_show_text(cr, plot._x_label.value().c_str());
@@ -422,7 +426,7 @@ namespace yapl {
             cairo_text_extents(cr, plot._y_label.value().c_str(), &extents);
 
             // Calculate the position to start drawing the text
-            double y_label_x = (border_left_offset - extents.width) / 2 - extents.x_bearing;
+            double y_label_x = (border_left_offset - extents.width) / 2 - extents.x_bearing - y_label_additional_offset;
             double y_label_y = (height + title_font_size) / 2;
             
             cairo_move_to(cr, y_label_x, y_label_y);

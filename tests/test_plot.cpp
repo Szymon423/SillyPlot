@@ -36,9 +36,10 @@ void test_time_plot() {
     try {
         yapl::Plot plot;
         std::vector<double> x, y;
+        time_t now = std::time(nullptr);
         for (int i = 0; i < 1000; i++) {
-            x.push_back(i);
-            y.push_back(time(nullptr));
+            x.push_back(now + i);
+            y.push_back(i);
         }
         plot.addData(x, y);
         plot.xLabel("time");
@@ -46,18 +47,18 @@ void test_time_plot() {
         plot.title("Value in time");
         plot.grid(true);
         plot.setColorMaker([](double x, double y) -> yapl::Color {
-            if (y >= 0.7) return yapl::Color(1.0, 0.0, 0.0);
-            if (y >= 0.5) return yapl::Color(1.0, 1.0, 0.0);
+            if (y >= 700) return yapl::Color(1.0, 0.0, 0.0);
+            if (y >= 500) return yapl::Color(1.0, 0.8, 0.0);
             return yapl::Color(0.0, 0.0, 1.0);
         });
         plot.setLabelMaker([](double val) -> std::string {
             time_t t = val;
             std::tm *tm_ptr = std::localtime(&t);
             std::stringstream ss;
-            ss << std::put_time(tm_ptr, "%Y-%m-%d %H:%M:%S");
+            ss << std::put_time(tm_ptr, "%H:%M:%S");
             return ss.str();
         });
-        plot.save("/YAPL/img/test/test_time_output.png");
+        plot.save("/YAPL/img/test/test_time_output.png", 1280, 720);
     }
     catch (yapl::Exception& e) {
         std::cout << "Error: " << e.what() << std::endl;
